@@ -1,35 +1,55 @@
+import { useToast } from "@/hooks/use-toast"; // Ensure this is the correct path
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { Dice6 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import GameCard from "@/components/game-card";
 import Filters from "@/components/filters";
+import GameCard from "@/components/game-card";
+import { Button } from "@/components/ui/button";
+import { Dice6 } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Game, GameFilters } from "@/lib/api-types";
 
 export default function Home() {
-  const { toast } = useToast();
+  const { toast } = useToast(); // Ensure useToast is properly imported
   const [filters, setFilters] = useState<GameFilters>({});
 
   const {
     data: game,
     refetch,
     isLoading,
-    error
+    error,
   } = useQuery<Game>({
     queryKey: ["/api/games/random", filters],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.genres) params.set('genres', JSON.stringify(filters.genres));
-      if (filters.minRating) params.set('minRating', filters.minRating.toString());
-      if (filters.minReviews) params.set('minReviews', filters.minReviews.toString());
-      if (filters.minReleaseYear) params.set('minReleaseYear', filters.minReleaseYear.toString());
-      if (filters.independentOnly) params.set('independentOnly', filters.independentOnly.toString());
+
+      // Construct query parameters based on filters
+      if (filters.genres) params.set("genres", JSON.stringify(filters.genres));
+      if (filters.minRating) params.set("minRating", filters.minRating.toString());
+      if (filters.minReviews) params.set("minReviews", filters.minReviews.toString());
       
+      // Handle dates parameter
+      if (filters.dates) {
+        try {
+          // The dates param needs to be in the format YYYY-MM-DD,YYYY-MM-DD
+          const dateRegex = /^\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/;
+          if (dateRegex.test(filters.dates)) {
+            params.set("dates", filters.dates);
+            console.log("Setting dates parameter:", filters.dates);
+          } else {
+            console.error("Invalid date format:", filters.dates);
+            params.set("dates", "2015-01-01,2025-12-31");
+          }
+        } catch (error) {
+          console.error("Error handling dates parameter:", error);
+          params.set("dates", "2015-01-01,2025-12-31");
+        }
+      }
+      
+      if (filters.independentOnly) params.set("independentOnly", filters.independentOnly.toString());
+
       const response = await fetch(`/api/games/random?${params.toString()}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch random game');
+        throw new Error("Failed to fetch random game");
       }
       return response.json();
     },
@@ -51,6 +71,7 @@ export default function Home() {
   };
 
   const handleFilterChange = (newFilters: GameFilters) => {
+    console.log("New filters:", newFilters);
     setFilters(newFilters);
   };
 

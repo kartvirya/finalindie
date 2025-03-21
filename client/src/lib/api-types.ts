@@ -29,4 +29,6 @@ export interface GameFilters {
   minReviews?: number;
   independentOnly?: boolean;
   minReleaseYear?: number;
+  maxReleaseYear?: number;
+  dates?: string;
 }

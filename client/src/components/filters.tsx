@@ -18,13 +18,16 @@ interface FiltersProps {
 
 export default function Filters({ onFilterChange }: FiltersProps) {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [rating, setRating] = useState([60]);
+  const [rating, setRating] = useState([30]);
   const [reviews, setReviews] = useState([0]);
-  const [releaseYear, setReleaseYear] = useState([2015]); // Default to 2015
+  const [releaseYear, setReleaseYear] = useState([2015]);
+  
 
   const { data: genres, isLoading } = useQuery<Genre[]>({
     queryKey: ["/api/genres"],
   });
+  
+  const maxYear = 2025; // Explicitly set max year to 2025
 
   const handleGenreToggle = (genreSlug: string) => {
     // Skip the "indie" genre as it's always applied
@@ -49,8 +52,9 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   };
 
   const handleReleaseYearChange = (newYear: number[]) => {
-    setReleaseYear(newYear);
-    updateFilters(selectedGenres, rating[0], reviews[0], newYear[0]);
+    const year = Math.min(newYear[0], maxYear); // Ensure year doesn't exceed maxYear
+    setReleaseYear([year]);
+    updateFilters(selectedGenres, rating[0], reviews[0], year);
   };
 
   const updateFilters = (
@@ -62,15 +66,30 @@ export default function Filters({ onFilterChange }: FiltersProps) {
     // Always include "indie" genre and set independentOnly to true
     const allGenres = genres.includes("indie") ? genres : [...genres, "indie"];
     
+    // Format dates in YYYY-MM-DD,YYYY-MM-DD format as required by the API
+    // Use padded months and days to ensure format is correct
+    const startDate = `${selectedYear}-01-01`;
+    const endDate = `${maxYear}-12-31`;
+    
+    // Validate the date format (should be YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      console.error("Invalid date format. Dates should be in YYYY-MM-DD format.");
+      return;
+    }
+    
+    const dateRange = `${startDate},${endDate}`;
+    console.log("Using date range:", dateRange);
+    
     const filters: GameFilters = {
       genres: allGenres.length > 0 ? allGenres : ["indie"],
       independentOnly: true,
-      minReleaseYear: selectedYear
+      dates: dateRange
     };
-
+    
     if (minRating > 0) filters.minRating = minRating;
     if (minReviews > 0) filters.minReviews = minReviews;
-
+  
     console.log("Applying filters:", filters);
     onFilterChange(filters);
   };
@@ -84,10 +103,10 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   useEffect(() => {
     // Apply default filters when component mounts
     setSelectedGenres([]);
-    setRating([60]);
+    setRating([30]);
     setReviews([0]);
     setReleaseYear([2015]);
-    updateFilters([], 60, 0, 2015);
+    updateFilters([], 30, 0, 2015);
   }, []);
 
   return (
@@ -147,7 +166,7 @@ export default function Filters({ onFilterChange }: FiltersProps) {
             value={rating}
             onValueChange={handleRatingChange}
             max={100}
-            step={10}
+            step={5}
             className="w-full"
           />
           <div className="text-sm text-muted-foreground">
@@ -162,8 +181,8 @@ export default function Filters({ onFilterChange }: FiltersProps) {
           <Slider
             value={reviews}
             onValueChange={handleReviewsChange}
-            max={1000}
-            step={100}
+            max={500}
+            step={10}
             className="w-full"
           />
           <div className="text-sm text-muted-foreground">
@@ -173,18 +192,18 @@ export default function Filters({ onFilterChange }: FiltersProps) {
 
         <div className="space-y-3">
           <h3 className="font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4" /> Release Year
+            <Calendar className="h-4 w-4" /> Release Year (and newer)
           </h3>
           <Slider
             value={releaseYear}
             onValueChange={handleReleaseYearChange}
             min={2000}
-            max={2024}
+            max={maxYear} // Use maxYear instead of currentYear
             step={1}
             className="w-full"
           />
           <div className="text-sm text-muted-foreground">
-            Showing games from <strong>{releaseYear[0]}</strong>
+            {releaseYear[0]} or newer
           </div>
         </div>
       </CardContent>
