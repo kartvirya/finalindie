@@ -110,29 +110,34 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   }, []);
 
   return (
-    <Card className="sticky top-4 backdrop-blur-sm bg-card/80 border-primary/20">
-      <CardHeader className="space-y-2">
+    <Card className="sticky top-4 backdrop-blur-sm bg-cream/90 border-2 border-main hover:border-accent transition-colors duration-300 shadow-lg">
+      <CardHeader className="space-y-2 border-b border-main/30">
         <div className="flex items-center space-x-2">
-          <Gamepad2 className="h-5 w-5 text-primary" />
-          <CardTitle>Game Filters</CardTitle>
+          <Gamepad2 className="h-5 w-5 text-accent animate-bounce" />
+          <CardTitle className="text-accent">Game Filters</CardTitle>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-additional">
           Customize your indie game discovery
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
+      <CardContent className="space-y-8 pt-6">
+        <motion.div 
+          className="space-y-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h3 className="font-medium flex items-center gap-2 text-accent">
             Additional Genres
             {selectedGenres.length > 0 && (
-              <Badge variant="secondary" className="ml-2">
+              <Badge variant="secondary" className="ml-2 bg-additional text-cream">
                 {selectedGenres.length} selected
               </Badge>
             )}
           </h3>
           <div className="flex flex-wrap gap-2">
             {isLoading ? (
-              <div className="text-sm text-muted-foreground animate-pulse">
+              <div className="text-sm text-additional animate-pulse">
                 Loading genres...
               </div>
             ) : (
@@ -147,7 +152,11 @@ export default function Filters({ onFilterChange }: FiltersProps) {
                 >
                   <Badge
                     variant={selectedGenres.includes(genre.slug) ? "default" : "outline"}
-                    className="cursor-pointer hover:scale-105 transition-transform"
+                    className={`cursor-pointer hover:scale-105 transition-all duration-200 ${
+                      selectedGenres.includes(genre.slug)
+                        ? "bg-accent text-cream hover:bg-additional"
+                        : "border-accent/20 text-accent hover:border-accent hover:bg-main/50"
+                    }`}
                     onClick={() => handleGenreToggle(genre.slug)}
                   >
                     {genre.name}
@@ -156,56 +165,77 @@ export default function Filters({ onFilterChange }: FiltersProps) {
               ))
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
-            <Star className="h-4 w-4" /> Minimum Rating
+        <motion.div 
+          className="space-y-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <h3 className="font-medium flex items-center gap-2 text-accent">
+            <Star className="h-4 w-4 text-additional" /> Minimum Rating
           </h3>
-          <Slider
-            value={rating}
-            onValueChange={handleRatingChange}
-            max={100}
-            step={5}
-            className="w-full"
-          />
-          <div className="text-sm text-muted-foreground">
+          <div className="px-2">
+            <Slider
+              value={rating}
+              onValueChange={handleRatingChange}
+              max={100}
+              step={5}
+              className="w-full"
+            />
+          </div>
+          <div className="text-sm text-additional font-medium">
             {rating[0]}% or higher
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
-            <Users className="h-4 w-4" /> Minimum Reviews
+        <motion.div 
+          className="space-y-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <h3 className="font-medium flex items-center gap-2 text-accent">
+            <Users className="h-4 w-4 text-additional" /> Minimum Reviews
           </h3>
-          <Slider
-            value={reviews}
-            onValueChange={handleReviewsChange}
-            max={500}
-            step={10}
-            className="w-full"
-          />
-          <div className="text-sm text-muted-foreground">
+          <div className="px-2">
+            <Slider
+              value={reviews}
+              onValueChange={handleReviewsChange}
+              max={500}
+              step={10}
+              className="w-full"
+            />
+          </div>
+          <div className="text-sm text-additional font-medium">
             {reviews[0]}+ reviews
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-3">
-          <h3 className="font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4" /> Release Year (and newer)
+        <motion.div 
+          className="space-y-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        >
+          <h3 className="font-medium flex items-center gap-2 text-accent">
+            <Calendar className="h-4 w-4 text-additional" /> Release Year (and newer)
           </h3>
-          <Slider
-            value={releaseYear}
-            onValueChange={handleReleaseYearChange}
-            min={2000}
-            max={maxYear} // Use maxYear instead of currentYear
-            step={1}
-            className="w-full"
-          />
-          <div className="text-sm text-muted-foreground">
+          <div className="px-2">
+            <Slider
+              value={releaseYear}
+              onValueChange={handleReleaseYearChange}
+              min={2000}
+              max={maxYear}
+              step={1}
+              className="w-full"
+            />
+          </div>
+          <div className="text-sm text-additional font-medium">
             {releaseYear[0]} or newer
           </div>
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );

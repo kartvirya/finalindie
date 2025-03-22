@@ -3,11 +3,47 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
+  :root {
+    --main-color: 201 242 239;
+    --cream-color: 255 251 240;
+    --accent-color: 0 67 105;
+    --additional-color: 27 120 149;
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply bg-gradient-to-br from-main via-cream to-main min-h-screen text-accent;
   }
+}
+
+@layer components {
+  .slider-thumb {
+    @apply bg-accent hover:bg-additional transition-colors duration-200;
+  }
+
+  .slider-track {
+    @apply bg-main hover:bg-accent/20 transition-colors duration-200;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-cream;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-accent/50 rounded-full hover:bg-additional/50 transition-colors duration-200;
+}
+
+/* Custom Selection */
+::selection {
+  @apply bg-accent/20 text-accent;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
 }

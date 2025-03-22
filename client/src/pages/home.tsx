@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dice6 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Game, GameFilters } from "@/lib/api-types";
+import React from "react";
 
 export default function Home() {
   const { toast } = useToast(); // Ensure useToast is properly imported
@@ -70,34 +71,52 @@ export default function Home() {
     refetch();
   };
 
+  // Reference to the dice icon
+  const diceRef = React.useRef<HTMLDivElement>(null);
+
+  // Function to trigger dice animation
+  const animateDice = () => {
+    if (!isLoading && diceRef.current) {
+      const element = diceRef.current;
+      element.style.transition = "transform 0.5s ease";
+      element.style.transform = "rotate(360deg)";
+      
+      setTimeout(() => {
+        element.style.transition = "transform 0s";
+        element.style.transform = "rotate(0deg)";
+      }, 500);
+    }
+  };
+
   const handleFilterChange = (newFilters: GameFilters) => {
     console.log("New filters:", newFilters);
     setFilters(newFilters);
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-background to-accent/5">
-      <div className="max-w-4xl mx-auto text-center mb-12 px-4">
+    <div className="min-h-[calc(100vh-4rem)]">
+      <div className="max-w-4xl mx-auto text-center mb-12 px-4 pt-2">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="space-y-4"
         >
-          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+          <h1 className="text-5xl font-bold text-accent">
             Find Your Next Indie Game
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-additional">
             Discover hidden gems in the indie game world
           </p>
         </motion.div>
       </div>
 
-      <div className="grid lg:grid-cols-[300px,1fr] gap-8 px-4">
+      <div className="grid lg:grid-cols-[300px,1fr] gap-8 px-4 -mt-8">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
+          className="bg-cream/50 p-6 rounded-lg shadow-lg -mt-12"
         >
           <Filters onFilterChange={handleFilterChange} />
         </motion.div>
@@ -110,19 +129,34 @@ export default function Home() {
         >
           <Button
             size="lg"
-            onClick={handleRandomize}
+            onClick={() => {
+              handleRandomize();
+              animateDice();
+            }}
             disabled={isLoading}
-            className="w-full bg-primary hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl"
+            className="w-full bg-accent hover:bg-additional text-cream transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl rounded-lg overflow-hidden relative"
           >
-            <Dice6 className="mr-2 h-6 w-6" />
-            {isLoading ? "Finding a game..." : "Find Random Game"}
+            <div className="flex items-center justify-center">
+              <div 
+                ref={diceRef}
+                className={`mr-2 ${isLoading ? 'animate-spin' : ''}`}
+              >
+                <Dice6 className="h-6 w-6 text-cream" />
+              </div>
+              <span>{isLoading ? "Finding a game..." : "Find Random Game"}</span>
+            </div>
           </Button>
 
           {game && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
+              transition={{ 
+                duration: 0.4,
+                type: "spring",
+                stiffness: 100 
+              }}
+              className="bg-cream/50 rounded-lg shadow-lg overflow-hidden"
             >
               <GameCard game={game} />
             </motion.div>

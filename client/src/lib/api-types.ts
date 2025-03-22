@@ -9,6 +9,7 @@ export interface Game {
   name: string;
   background_image: string;
   rating: number;
+  ratings_count: number;
   released: string;
   genres: Genre[];
   description_raw?: string;

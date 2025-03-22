@@ -15,8 +15,7 @@ export default function GameCard({ game }: GameCardProps) {
   const { toast } = useToast();
 
   const handleShare = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent card link click
-
+    e.preventDefault();
     try {
       await navigator.share({
         title: game.name,
@@ -24,11 +23,11 @@ export default function GameCard({ game }: GameCardProps) {
         url: window.location.origin + `/game/${game.id}`
       });
     } catch (err) {
-      // Fallback to copying link
       navigator.clipboard.writeText(window.location.origin + `/game/${game.id}`);
       toast({
-        title: "Link copied!",
-        description: "Game link has been copied to your clipboard."
+        title: "Link copied! 🎮",
+        description: "Game link has been copied to your clipboard.",
+        duration: 2000,
       });
     }
   };
@@ -42,29 +41,32 @@ export default function GameCard({ game }: GameCardProps) {
       className="group relative"
     >
       <Link href={`/game/${game.id}`}>
-        <a className="block">
-          <Card className="overflow-hidden transition-colors hover:bg-accent/5 border-primary/10">
+        <a className="block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-lg">
+          <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl border-2 border-main hover:border-accent bg-cream/80 rounded-lg transform hover:-translate-y-1">
             <div className="aspect-video relative overflow-hidden">
-              <img
+              <motion.img
                 src={game.background_image}
                 alt={game.name}
                 className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-accent/90 via-accent/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-2 line-clamp-2 drop-shadow-lg">
+                <h2 className="text-xl md:text-2xl font-bold text-cream mb-3 line-clamp-2 drop-shadow-lg">
                   {game.name}
                 </h2>
-                <div className="flex items-center gap-2 md:gap-4 flex-wrap">
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400" />
+                <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                  <Badge variant="secondary" className="flex items-center gap-1 bg-additional text-cream shadow-sm">
+                    <Star className="h-3 w-3 md:h-4 md:w-4 text-main animate-pulse" />
                     {Math.round(game.rating * 10) / 10}
                   </Badge>
-                  <Badge variant="secondary" className="flex items-center gap-1">
+                  <Badge variant="secondary" className="flex items-center gap-1 bg-additional text-cream shadow-sm">
                     <Users className="h-3 w-3 md:h-4 md:w-4" />
-                    {game.ratings_count.toLocaleString()} reviews
+                    {game.ratings_count.toLocaleString()}
                   </Badge>
-                  <Badge variant="secondary" className="flex items-center gap-1">
+                  <Badge variant="secondary" className="flex items-center gap-1 bg-additional text-cream shadow-sm">
                     <CalendarDays className="h-3 w-3 md:h-4 md:w-4" />
                     {new Date(game.released).getFullYear()}
                   </Badge>
@@ -78,25 +80,30 @@ export default function GameCard({ game }: GameCardProps) {
                     <Badge
                       key={genre.id}
                       variant="outline"
-                      className="bg-primary/5 text-primary border-primary/20"
+                      className="bg-main/50 text-accent border-accent/20 hover:bg-accent hover:text-cream transition-colors duration-200 shadow-sm"
                     >
                       {genre.name}
                     </Badge>
                   ))}
                   {game.genres.length > 3 && (
-                    <Badge variant="outline" className="bg-muted">
+                    <Badge variant="outline" className="bg-main/50 text-accent shadow-sm">
                       +{game.genres.length - 3} more
                     </Badge>
                   )}
                 </div>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={handleShare}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <Share2 className="h-4 w-4" />
-                </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="ml-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-main/30 hover:bg-accent hover:text-cream rounded-full w-8 h-8 p-0 flex items-center justify-center shadow-md hover:shadow-lg"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </motion.div>
               </div>
             </CardContent>
           </Card>

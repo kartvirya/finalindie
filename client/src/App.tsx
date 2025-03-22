@@ -6,18 +6,20 @@ import Home from "@/pages/home";
 import GameDetails from "@/pages/game-details";
 import SiteHeader from "@/components/site-header";
 import NotFound from "@/pages/not-found";
+import { EmailPopup } from "@/components/EmailPopup";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-main to-cream">
       <SiteHeader />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-16 pb-8 animate-fade-in">
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/game/:id" component={GameDetails} />
           <Route component={NotFound} />
         </Switch>
       </main>
+      <EmailPopup />
       <Toaster />
     </div>
   );
