@@ -9,7 +9,7 @@ export default function SiteHeader() {
       <div className="container mx-auto px-4">
         <nav className="flex h-16 items-center justify-between">
           <Link href="/">
-            <a className="flex items-center space-x-3 hover:opacity-90 transition-all duration-300 group">
+            <a className="flex items-center hover:opacity-90 transition-all duration-300 group">
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -22,9 +22,6 @@ export default function SiteHeader() {
                   className="h-full w-auto"
                 />
               </motion.div>
-              <span className="text-xl font-bold text-accent group-hover:text-additional transition-colors duration-300">
-                Indie Game Club
-              </span>
             </a>
           </Link>
 

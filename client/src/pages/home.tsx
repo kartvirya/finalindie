@@ -105,9 +105,15 @@ export default function Home() {
           <h1 className="text-5xl font-bold text-accent">
             Find Your Next Indie Game
           </h1>
-          <p className="text-xl text-additional">
-            Discover hidden gems in the indie game world
-          </p>
+          <motion.div 
+            className="bg-cream/80 backdrop-blur-sm py-2 px-4 rounded-lg shadow-md inline-block"
+            whileHover={{ scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <p className="text-base sm:text-lg md:text-xl font-medium text-accent drop-shadow-sm">
+              Discover hidden gems in the indie game world
+            </p>
+          </motion.div>
         </motion.div>
       </div>
 
