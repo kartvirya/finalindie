@@ -105,12 +105,9 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <h1 className="text-3xl md:text-4xl font-bold text-[#2d3436] mb-2">
-              Find Your Next Indie Game
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#2d3436] mb-4">
+              Random Indie Game Generator
             </h1>
-            <p className="text-sm md:text-base text-[#2d3436]/80 mb-4">
-              Discover hidden gems in the indie game world
-            </p>
           </motion.div>
 
           <div className="flex items-center gap-2 max-w-xl mx-auto">
