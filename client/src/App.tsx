@@ -10,7 +10,7 @@ import { EmailPopup } from "@/components/EmailPopup";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-main to-cream">
+    <div className="min-h-screen bg-[#e6f7f7]">
       <SiteHeader />
       <main className="container mx-auto px-4 pt-16 pb-8 animate-fade-in">
         <Switch>

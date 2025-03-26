@@ -11,7 +11,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-main via-cream to-main min-h-screen text-accent;
+    @apply bg-[#e6f7f7] min-h-screen text-accent;
   }
 }
 
